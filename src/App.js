@@ -1,23 +1,26 @@
 import logo from './logo.svg';
 import './App.css';
+import React, { useEffect, useState } from 'react';
+
 
 function App() {
+  const [filePath, setFilePath] = useState("ready")
+  useEffect(() => {
+    // 监听来自主进程的消息
+    window.API.receive('open-file', (event, filePath) => {
+      console.info(filePath); // 打印接收到的消息
+      setFilePath(filePath)
+    });
+
+    // 在组件卸载时移除监听器
+    return () => {
+      // ipcRenderer.removeAllListeners('open-file');
+    };
+  }, []); // 仅在组件加载时执行
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>你好！{ filePath }</h1>
     </div>
   );
 }
